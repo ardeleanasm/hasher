@@ -1,10 +1,11 @@
 module Main where
 
-import Lib
+import HashGenerator
 
 import System.Exit
 import System.Environment(getArgs,getProgName)
-import Text.Read
+import Data.Text(pack)
+import Data.Text.Encoding      (encodeUtf8)
 
 
 
@@ -31,8 +32,10 @@ parseArguments args appName=do
     ["-v"]->printVersion appName "0.1.0.0">>exitWith ExitSuccess
     ["-f",value]->putStrLn value
     ["-c",value]->putStrLn value
-    ["-s",value]->putStrLn value
+    ["-s",value]->print $ calculate MD5_F $ encodeUtf8 $ pack value
     []->help appName>>exitWith (ExitFailure 1)
+
+
 
 
   

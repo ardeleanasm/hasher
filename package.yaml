@@ -24,7 +24,10 @@ dependencies:
 
 library:
   source-dirs: src
-
+  dependencies:
+    - cryptonite
+    - text
+    - bytestring
 executables:
   hasher-exe:
     main:                Main.hs
@@ -35,6 +38,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - hasher
+    - cryptonite
+    - text
+    - bytestring
 
 tests:
   hasher-test:

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d53de1218417201fc70e6880292b3a1534a0bdd95bd5c50ddcccb5b4b8a2ac32
+-- hash: e85ddaf7c1a37c04182e2aa4a1665500ca4b80a8ff2345fd484ef1fd17b63e55
 
 name:           hasher
 version:        0.1.0.0
@@ -30,8 +30,11 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , cryptonite
+    , text
   exposed-modules:
-      Lib
+      HashGenerator
   other-modules:
       Paths_hasher
   default-language: Haskell2010
@@ -43,7 +46,10 @@ executable hasher-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , cryptonite
     , hasher
+    , text
   other-modules:
       Paths_hasher
   default-language: Haskell2010
