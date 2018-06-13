@@ -28,6 +28,7 @@ library:
     - cryptonite
     - text
     - bytestring
+    - memory
 executables:
   hasher-exe:
     main:                Main.hs
@@ -41,6 +42,7 @@ executables:
     - cryptonite
     - text
     - bytestring
+    - memory
 
 tests:
   hasher-test:

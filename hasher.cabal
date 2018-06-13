@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e85ddaf7c1a37c04182e2aa4a1665500ca4b80a8ff2345fd484ef1fd17b63e55
+-- hash: fb689444ce8729a82e0757a13218a61b8e9fb894535bd8d36c0fe2d703dc6cd5
 
 name:           hasher
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       base >=4.7 && <5
     , bytestring
     , cryptonite
+    , memory
     , text
   exposed-modules:
       HashGenerator
@@ -49,6 +50,7 @@ executable hasher-exe
     , bytestring
     , cryptonite
     , hasher
+    , memory
     , text
   other-modules:
       Paths_hasher

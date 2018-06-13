@@ -7,14 +7,14 @@ module HashGenerator
 import Crypto.Hash
 import Data.ByteString(ByteString)
 import Data.ByteString.Char8(pack)
+--import Data.ByteArray.convert
+--use convert on digest instead of transform to String and back to bytestring
 
 data HashFunction=MD5_F|SHA1_F|SHA256_F|SHA512_F
 
 
 class HashGenerator a where
   calculate::a->ByteString->ByteString
-
-
 
 instance HashGenerator HashFunction where
   calculate=calculateHash
@@ -25,6 +25,7 @@ instance Eq HashFunction where
   (==) SHA256_F SHA256_F=True
   (==) SHA512_F SHA512_F=True
   (==) _ _=False
+
 
 md5Hash::ByteString->String
 md5Hash input=show (hash input::Digest MD5)
