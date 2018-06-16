@@ -7,10 +7,10 @@ module HashGenerator
 import Crypto.Hash
 import Data.ByteString(ByteString)
 import Data.ByteString.Char8(pack)
---import Data.ByteArray.convert
---use convert on digest instead of transform to String and back to bytestring
+import qualified Data.Text as DT
+import Data.Text.Encoding      (encodeUtf8)
 
-data HashFunction=MD5_F|SHA1_F|SHA256_F|SHA512_F
+data HashFunction=MD5_F|SHA1_F|SHA256_F|SHA512_F|UNDEFINED_F
 
 
 class HashGenerator a where
@@ -24,6 +24,7 @@ instance Eq HashFunction where
   (==) SHA1_F SHA1_F=True
   (==) SHA256_F SHA256_F=True
   (==) SHA512_F SHA512_F=True
+  (==) UNDEFINED_F UNDEFINED_F=True
   (==) _ _=False
 
 
@@ -49,3 +50,4 @@ calculateHash hashF input
   |hashF==SHA1_F=pack $ sha1Hash input
   |hashF==SHA256_F=pack $ sha256Hash input
   |hashF==SHA512_F=pack $ sha512Hash input
+  |hashF==UNDEFINED_F=encodeUtf8 $ DT.pack "Undefined Hash Function!"
