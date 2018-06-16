@@ -27,6 +27,12 @@ instance Eq HashFunction where
   (==) UNDEFINED_F UNDEFINED_F=True
   (==) _ _=False
 
+instance Show HashFunction where
+  show MD5_F="md5"
+  show SHA1_F="sha1"
+  show SHA256_F="sha256"
+  show SHA512_F="sha512"
+  show _="undefined"
 
 md5Hash::ByteString->String
 md5Hash input=show (hash input::Digest MD5)
