@@ -1,11 +1,14 @@
 module Main where
 
-
+import System.Exit
 import System.Environment(getArgs,getProgName)
 import CommandLineParser
 
-
-
+import Data.Text(pack)
+import Data.Text.Encoding      (encodeUtf8)
+import HashGenerator
+import InteractiveRun
+import Data.Maybe
 
 printVersion::String->String->IO()
 printVersion appName appVersion=putStrLn $ appName++ " Version: "++appVersion
@@ -38,7 +41,16 @@ header=do
   putStrLn " |_|  |_|\\__,_|___/_| |_|\\___|_|   "
 
 
-
+hashPlaintext::String->[Char]->IO()
+hashPlaintext hash plaintext=print $ calculate (what hash) $ encodeUtf8 $ pack plaintext where
+      what "MD5"=MD5_F
+      what "SHA1"=SHA1_F
+      what "SHA256"=SHA256_F
+      what "SHA512"=SHA512_F
+      what _=UNDEFINED_F
+  
+hashFile::String->String->IO()
+hashFile hash file=putStrLn $concat [hash," ",file]
 
 
   
@@ -48,5 +60,13 @@ main = do
   appName<-getProgName
   header
   arguments<-parseArguments args
-  putStrLn "Ana"
+  case arguments of
+    (ONLY_MESSAGE,secondArgument)->do
+      case messageType secondArgument of
+        Just APP_HELP->help appName>>exitWith ExitSuccess
+        Just APP_VERSION->printVersion appName "0.1.0.0">>exitWith ExitSuccess
+    (FAILURE,_)->help appName>>exitWith (ExitFailure 1)
+    (HASH_PLAINTEXT,secondArgument)->
+      hashPlaintext (show $ fromJust $ hashFunction secondArgument) (fromJust $ plaintext secondArgument)>>exitWith ExitSuccess
+  putStrLn "Finished"
   

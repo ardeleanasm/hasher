@@ -28,11 +28,11 @@ instance Eq HashFunction where
   (==) _ _=False
 
 instance Show HashFunction where
-  show MD5_F="md5"
-  show SHA1_F="sha1"
-  show SHA256_F="sha256"
-  show SHA512_F="sha512"
-  show _="undefined"
+  show MD5_F="MD5"::String
+  show SHA1_F="SHA1"::String
+  show SHA256_F="SHA256"::String
+  show SHA512_F="SHA512"::String
+  show _="undefined"::String
 
 md5Hash::ByteString->String
 md5Hash input=show (hash input::Digest MD5)
