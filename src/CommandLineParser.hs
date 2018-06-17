@@ -15,8 +15,8 @@ data MessageType=APP_HELP|APP_VERSION deriving (Eq,Show)
 data RetValue=
   RetValue{
   hashFunction::Maybe HashFunction
-  ,plaintext::Maybe String
-  ,file::Maybe String
+  ,plaintext::String
+  ,filePath::String
   ,messageType::Maybe MessageType
   }deriving (Eq,Show)
 
@@ -33,20 +33,20 @@ parseArguments::[String]->IO (RetType,RetValue)
 parseArguments args=do
   case args of
     ["-h"]->
-      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Just APP_HELP})
+      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Just APP_HELP})
       --help appName>>exitWith ExitSuccess
     ["-help"]->
-      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Just APP_HELP})
+      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Just APP_HELP})
       --help appName>>exitWith ExitSuccess
     ["-v"]->
-      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Just APP_VERSION})
+      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Just APP_VERSION})
       --printVersion appName "0.1.0.0">>exitWith ExitSuccess
-    ["-f",hash,file]->
-      return (HASH_FILE,RetValue{hashFunction=(getFunction hash),plaintext=Nothing,file=Just file,messageType=Nothing})
+    ["-f",hash,filePathString]->
+      return (HASH_FILE,RetValue{hashFunction=(getFunction hash),plaintext="",filePath=filePathString,messageType=Nothing})
     ["-s",hash,plaintext]->
-      return (HASH_PLAINTEXT,RetValue{hashFunction=(getFunction hash),plaintext=Just plaintext,file=Nothing,messageType=Nothing})
+      return (HASH_PLAINTEXT,RetValue{hashFunction=(getFunction hash),plaintext=plaintext,filePath="",messageType=Nothing})
     []->
-      return (INTERACTIVE_MODE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Nothing})
+      return (INTERACTIVE_MODE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Nothing})
 
 
 
