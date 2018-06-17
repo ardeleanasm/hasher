@@ -3,12 +3,14 @@ module Main where
 import System.Exit
 import System.IO
 import System.Environment(getArgs,getProgName)
+import System.Directory(doesFileExist)
 import CommandLineParser
 import Control.Monad(forever,when)
 import Data.Text(pack)
 import Data.Text.Encoding      (encodeUtf8)
 import HashGenerator
 import Data.Maybe
+import qualified Data.ByteString as BS
 
 printVersion::String->String->IO()
 printVersion appName appVersion=putStrLn $ appName++ " Version: "++appVersion
@@ -45,8 +47,8 @@ hashPlaintext::HashFunction->[Char]->IO()
 hashPlaintext hash plaintext=print $ calculate hash $ encodeUtf8 $ pack plaintext 
 
   
-hashFile::String->String->IO()
-hashFile hash file=putStrLn $concat [hash," ",file]
+hashFile::HashFunction->BS.ByteString->IO()
+hashFile hash content=print $ calculate hash content
 
 chooseHashFunctionMenu::IO()
 chooseHashFunctionMenu=do
@@ -91,12 +93,23 @@ runInteractive=forever $ do
     1->do
       putStr "Enter Plaintext:"
       plaintext<-getLine
-      hashPlaintext (hashFunction) plaintext
-    2->putStrLn "Ana are mere"
+      hashPlaintext hashFunction plaintext
+    2->do
+      putStr "Enter filepath:"
+      filePath<-getLine
+      fileExist<-doesFileExist filePath
+      if fileExist == True then do
+        byteString <- BS.readFile filePath
+        hashFile hashFunction byteString
+        else
+          putStrLn "File does not exist!"
     _->exitWith (ExitFailure 1)
   putStrLn "1. Continue\n2. Exit"
   value<-getLine
   when (not $ ((read value::Int)==1))$ do exitWith ExitSuccess
+
+
+  
 
  
 main :: IO ()
@@ -111,9 +124,14 @@ main = do
         Just APP_HELP->help appName>>exitWith ExitSuccess
         Just APP_VERSION->printVersion appName "0.1.0.0">>exitWith ExitSuccess
     (HASH_PLAINTEXT,secondArgument)->
-      hashPlaintext (fromJust $ hashFunction secondArgument) (fromJust $ plaintext secondArgument)>>exitWith ExitSuccess
-    (HASH_FILE,secondArgument)->
-      hashFile (show $ fromJust $ hashFunction secondArgument) (show $ fromJust $ file secondArgument)>>exitWith ExitSuccess
+      hashPlaintext (fromJust $ hashFunction secondArgument) (plaintext secondArgument)>>exitWith ExitSuccess
+    (HASH_FILE,secondArgument)->do
+      fileExist<-doesFileExist $ filePath secondArgument
+      if fileExist==True then do
+        byteString<-BS.readFile $ filePath secondArgument
+        hashFile (fromJust $ hashFunction secondArgument) byteString>>exitWith ExitSuccess
+      else do
+        putStrLn "File does not exist!">>exitWith (ExitFailure 1)
     (INTERACTIVE_MODE,_)->
       runInteractive
   putStrLn "Finished"

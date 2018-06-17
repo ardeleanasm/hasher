@@ -51,7 +51,7 @@ executable hasher-exe
               , cryptonite
               , hasher
               , text
-              
+              , directory              
   other-modules:
                 Paths_hasher
   default-language: Haskell2010
