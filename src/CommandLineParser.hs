@@ -8,7 +8,7 @@ module CommandLineParser
 
 import HashGenerator
 
-data RetType=ONLY_MESSAGE|HASH_PLAINTEXT|HASH_FILE|FAILURE deriving (Eq,Show)
+data RetType=ONLY_MESSAGE|HASH_PLAINTEXT|HASH_FILE|INTERACTIVE_MODE deriving (Eq,Show)
 data MessageType=APP_HELP|APP_VERSION deriving (Eq,Show)
 
 
@@ -41,18 +41,12 @@ parseArguments args=do
     ["-v"]->
       return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Just APP_VERSION})
       --printVersion appName "0.1.0.0">>exitWith ExitSuccess
-    ["-i"]->
-      return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Just APP_VERSION})
-      --runInteractive
     ["-f",hash,file]->
-      return (ONLY_MESSAGE,RetValue{hashFunction=(getFunction hash),plaintext=Nothing,file=Nothing,messageType=Just APP_VERSION})
-      --hashFile hash file
+      return (HASH_FILE,RetValue{hashFunction=(getFunction hash),plaintext=Nothing,file=Just file,messageType=Nothing})
     ["-s",hash,plaintext]->
       return (HASH_PLAINTEXT,RetValue{hashFunction=(getFunction hash),plaintext=Just plaintext,file=Nothing,messageType=Nothing})
-      --hashPlaintext hash plaintext
     []->
-      return (FAILURE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Nothing})
-      --help appName>>exitWith (ExitFailure 1)
+      return (INTERACTIVE_MODE,RetValue{hashFunction=Nothing,plaintext=Nothing,file=Nothing,messageType=Nothing})
 
 
 

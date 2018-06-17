@@ -1,13 +1,13 @@
 module Main where
 
 import System.Exit
+import System.IO
 import System.Environment(getArgs,getProgName)
 import CommandLineParser
-
+import Control.Monad(forever,when)
 import Data.Text(pack)
 import Data.Text.Encoding      (encodeUtf8)
 import HashGenerator
-import InteractiveRun
 import Data.Maybe
 
 printVersion::String->String->IO()
@@ -52,8 +52,57 @@ hashPlaintext hash plaintext=print $ calculate (what hash) $ encodeUtf8 $ pack p
 hashFile::String->String->IO()
 hashFile hash file=putStrLn $concat [hash," ",file]
 
+chooseHashFunctionMenu::IO()
+chooseHashFunctionMenu=do
+  putStrLn "Available Hash Functions:"
+  putStrLn "\t1. MD5"
+  putStrLn "\t2. SHA1"
+  putStrLn "\t3. SHA256"
+  putStrLn "\t4. SHA512"
+  putStr "Select Hash Function:"
 
-  
+
+chooseHashFunction::IO HashFunction
+chooseHashFunction=do
+  value<-getLine
+  return (selectHashFunction (read value::Int))
+
+selectHashFunction::Int->HashFunction
+selectHashFunction value
+  |value==1=MD5_F
+  |value==2=SHA1_F
+  |value==3=SHA256_F
+  |value==4=SHA512_F
+  |otherwise=UNDEFINED_F
+
+printHashingOptions::IO()  
+printHashingOptions=putStrLn "1. Hash plaintext" >> putStrLn "2. Hash File"
+
+
+readHashingOption::IO Int
+readHashingOption=do
+  value<-getLine
+  return (read value::Int)
+
+runInteractive::IO()
+runInteractive=forever $ do
+  hSetBuffering stdout NoBuffering
+  chooseHashFunctionMenu
+  hashFunction<-chooseHashFunction
+  printHashingOptions
+  val<-readHashingOption
+  case val of
+    1->do
+      putStr "Enter Plaintext:"
+      plaintext<-getLine
+      hashPlaintext (show hashFunction) plaintext
+    2->putStrLn "Ana are mere"
+    _->exitWith (ExitFailure 1)
+  putStrLn "1. Continue\n2. Exit"
+  value<-getLine
+  when (not $ ((read value::Int)==1))$ do exitWith ExitSuccess
+
+ 
 main :: IO ()
 main = do
   args<-getArgs
@@ -65,8 +114,11 @@ main = do
       case messageType secondArgument of
         Just APP_HELP->help appName>>exitWith ExitSuccess
         Just APP_VERSION->printVersion appName "0.1.0.0">>exitWith ExitSuccess
-    (FAILURE,_)->help appName>>exitWith (ExitFailure 1)
     (HASH_PLAINTEXT,secondArgument)->
       hashPlaintext (show $ fromJust $ hashFunction secondArgument) (fromJust $ plaintext secondArgument)>>exitWith ExitSuccess
+    (HASH_FILE,secondArgument)->
+      hashFile (show $ fromJust $ hashFunction secondArgument) (show $ fromJust $ file secondArgument)>>exitWith ExitSuccess
+    (INTERACTIVE_MODE,_)->
+      runInteractive
   putStrLn "Finished"
   
