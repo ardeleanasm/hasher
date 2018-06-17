@@ -35,7 +35,6 @@ library
               , text
   exposed-modules:
                   HashGenerator
-                , InteractiveRun
                 , CommandLineParser
   other-modules:
                 Paths_hasher
