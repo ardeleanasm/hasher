@@ -51,7 +51,6 @@ executable hasher-exe
               , cryptonite
               , hasher
               , text
-              , lens
               
   other-modules:
                 Paths_hasher
