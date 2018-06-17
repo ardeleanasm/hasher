@@ -20,7 +20,7 @@ help::String->IO()
 help appName=do
   putStrLn (appName++" <parameter> [<value>]")
   putStrLn "parameters:"
-  putStrLn "\t\t-h/-help\t help"
+  putStrLn "\t\t-h/--help\t help"
   putStrLn "\t\t-v\t\t version"
   putStrLn "\t\t-i\t\t interactive"
   putStrLn "\t\t-f <hash function abbreviation> <file>"

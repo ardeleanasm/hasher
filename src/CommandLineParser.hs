@@ -34,13 +34,10 @@ parseArguments args=do
   case args of
     ["-h"]->
       return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Just APP_HELP})
-      --help appName>>exitWith ExitSuccess
-    ["-help"]->
+    ["--help"]->
       return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Just APP_HELP})
-      --help appName>>exitWith ExitSuccess
     ["-v"]->
       return (ONLY_MESSAGE,RetValue{hashFunction=Nothing,plaintext="",filePath="",messageType=Just APP_VERSION})
-      --printVersion appName "0.1.0.0">>exitWith ExitSuccess
     ["-f",hash,filePathString]->
       return (HASH_FILE,RetValue{hashFunction=(getFunction hash),plaintext="",filePath=filePathString,messageType=Nothing})
     ["-s",hash,plaintext]->
