@@ -41,13 +41,9 @@ header=do
   putStrLn " |_|  |_|\\__,_|___/_| |_|\\___|_|   "
 
 
-hashPlaintext::String->[Char]->IO()
-hashPlaintext hash plaintext=print $ calculate (what hash) $ encodeUtf8 $ pack plaintext where
-      what "MD5"=MD5_F
-      what "SHA1"=SHA1_F
-      what "SHA256"=SHA256_F
-      what "SHA512"=SHA512_F
-      what _=UNDEFINED_F
+hashPlaintext::HashFunction->[Char]->IO()
+hashPlaintext hash plaintext=print $ calculate hash $ encodeUtf8 $ pack plaintext 
+
   
 hashFile::String->String->IO()
 hashFile hash file=putStrLn $concat [hash," ",file]
@@ -95,7 +91,7 @@ runInteractive=forever $ do
     1->do
       putStr "Enter Plaintext:"
       plaintext<-getLine
-      hashPlaintext (show hashFunction) plaintext
+      hashPlaintext (hashFunction) plaintext
     2->putStrLn "Ana are mere"
     _->exitWith (ExitFailure 1)
   putStrLn "1. Continue\n2. Exit"
@@ -115,7 +111,7 @@ main = do
         Just APP_HELP->help appName>>exitWith ExitSuccess
         Just APP_VERSION->printVersion appName "0.1.0.0">>exitWith ExitSuccess
     (HASH_PLAINTEXT,secondArgument)->
-      hashPlaintext (show $ fromJust $ hashFunction secondArgument) (fromJust $ plaintext secondArgument)>>exitWith ExitSuccess
+      hashPlaintext (fromJust $ hashFunction secondArgument) (fromJust $ plaintext secondArgument)>>exitWith ExitSuccess
     (HASH_FILE,secondArgument)->
       hashFile (show $ fromJust $ hashFunction secondArgument) (show $ fromJust $ file secondArgument)>>exitWith ExitSuccess
     (INTERACTIVE_MODE,_)->
