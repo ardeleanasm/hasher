@@ -82,6 +82,7 @@ readHashingOption=do
   value<-getLine
   return (read value::Int)
 
+
 runInteractive::IO()
 runInteractive=forever $ do
   hSetBuffering stdout NoBuffering
